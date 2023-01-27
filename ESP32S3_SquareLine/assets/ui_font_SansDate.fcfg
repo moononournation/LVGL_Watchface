@@ -1,0 +1,14 @@
+{
+  "codename": "SansDate",
+  "ttf_path": "/assets/NotoSansCJKhk-Medium.otf",
+  "bin_path": "/assets/ui_font_SansDate.bin",
+  "c_path": "/assets/ui_font_SansDate.c",
+  "cfg_path": "/assets/ui_font_SansDate.fcfg",
+  "size": 28,
+  "bpp": 8,
+  "letters": 0,
+  "ranges": [],
+  "symbols": "0123456789星期日一二三四五六",
+  "customparams": "--no-prefilter",
+  "uploaded": false
+}
