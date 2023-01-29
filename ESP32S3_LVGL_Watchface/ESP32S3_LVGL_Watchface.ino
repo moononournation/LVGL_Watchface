@@ -341,7 +341,7 @@ void loop()
     lv_img_set_angle(ui_ImageArmSecond, angle);
     angle = (angle + (timeinfo.tm_min * 3600)) / 60;
     lv_img_set_angle(ui_ImageArmMinute, angle);
-    angle = ((angle / 5) + (timeinfo.tm_hour * 3600)) / 12;
+    angle = (angle + (timeinfo.tm_hour * 3600)) / 12;
     lv_img_set_angle(ui_ImageArmHour, angle);
 
     // set labels' text
