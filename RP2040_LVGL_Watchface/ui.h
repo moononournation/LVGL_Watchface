@@ -46,9 +46,9 @@ LV_IMG_DECLARE( ui_img_out5_png);   // assets/out5.png
 LV_IMG_DECLARE( ui_img_out6_png);   // assets/out6.png
 LV_IMG_DECLARE( ui_img_out7_png);   // assets/out7.png
 LV_IMG_DECLARE( ui_img_out8_png);   // assets/out8.png
-LV_IMG_DECLARE( ui_img_1118768398);   // assets/arm-hour.png
-LV_IMG_DECLARE( ui_img_543888668);   // assets/arm-minute.png
-LV_IMG_DECLARE( ui_img_895701980);   // assets/arm-second.png
+LV_IMG_DECLARE( ui_img_armhour_png);   // assets/armHour.png
+LV_IMG_DECLARE( ui_img_armminute_png);   // assets/armMinute.png
+LV_IMG_DECLARE( ui_img_armsecond_png);   // assets/armSecond.png
 
 
 
