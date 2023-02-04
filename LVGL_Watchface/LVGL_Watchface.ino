@@ -1,14 +1,10 @@
 /*******************************************************************************
  * LVGL Watchface
  *
- * Anchor escapement video source:
- * https://www.youtube.com/watch?v=d_pV8TGKfMc
- *
  * Image by macrovector on Freepik:
  * https://www.freepik.com/free-vector/watch-set-expensive-classic-clock-with-leather-metal-straps-illustration_13031503.htm
  *
  * Dependent libraries:
- * PCF8563_Class: https://github.com/lewisxhe/PCF8563_Library.git
  * LVGL: https://github.com/lvgl/lvgl.git
  *
  * LVGL Configuration file:
@@ -33,52 +29,31 @@
  * Start of Arduino_GFX setting
  ******************************************************************************/
 #include <Arduino_GFX_Library.h>
-#include <Wire.h>
-#include "axp20x.h"
-#define GFX_EXTRA_PRE_INIT()                       \
-  {                                                \
-    AXP20X_Class axp;                              \
-    Wire.begin(21, 22);                            \
-    axp.begin();                                   \
-    axp.setStartupTime(AXP202_STARTUP_TIME_128MS); \
-    axp.setlongPressTime(0);                       \
-    axp.setTimeOutShutdown(true);                  \
-    axp.enableChargeing(true);                     \
-  }
-#define GFX_BL 12
-Arduino_DataBus *bus = new Arduino_ESP32SPI(27 /* DC */, 5 /* CS */, 18 /* SCK */, 19 /* MOSI */, GFX_NOT_DEFINED /* MISO */);
-Arduino_GFX *gfx = new Arduino_ST7789(bus, GFX_NOT_DEFINED /* RST */, 0 /* rotation */, true /* IPS */, 240 /* width */, 240 /* height */, 0 /* col offset 1 */, 0 /* row offset 1 */, 0 /* col offset 2 */, 80 /* row offset 2 */);
+#define GFX_BL 25
+/* More data bus class: https://github.com/moononournation/Arduino_GFX/wiki/Data-Bus-Class */
+Arduino_DataBus *bus = new Arduino_RPiPicoSPI(8 /* DC */, 9 /* CS */, 10 /* SCK */, 11 /* MOSI */, 12 /* MISO */, spi1 /* spi */);
+/* More display class: https://github.com/moononournation/Arduino_GFX/wiki/Display-Class */
+Arduino_GFX *gfx = new Arduino_GC9A01(bus, 12, 0 /* rotation */, true /* IPS */);
 /*******************************************************************************
  * End of Arduino_GFX setting
  ******************************************************************************/
 
-const char *weekday_str[] = {
-    "Sun",
-    "Mon",
-    "Tue",
-    "Wed",
-    "Thu",
-    "Fri",
-    "Sat"};
-
-#include "pcf8563.h"
-PCF8563_Class rtc;
+// use compile time for demo only
+#define ONE_MINUTE_MS (60 * 1000)
+#define ONE_HOUR_MS (60 * 60 * 1000)
+#define TWELVE_HOUR_MS (12 * 60 * 60 * 1000)
+static uint8_t conv2d(const char *p)
+{
+  uint8_t v = 0;
+  return (10 * (*p - '0')) + (*++p - '0');
+}
+static unsigned long ms_offset;
 
 static uint32_t screenWidth;
 static uint32_t screenHeight;
 static lv_disp_draw_buf_t draw_buf;
 static lv_color_t *disp_draw_buf;
 static lv_disp_drv_t disp_drv;
-static char buf[8]; // sprintf text buffer
-
-static uint8_t curr_anchor_idx = 0;
-static int16_t curr_anchor_angle = 0;
-static lv_obj_t *anchors[8];
-static unsigned long anchor_next_frame_ms;
-#define ANCHOR_FPS 25
-
-static RTC_Date rtcTime;
-static unsigned long next_get_timeinfo;
 
 /* Display flushing */
 void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
@@ -95,16 +70,14 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
   lv_disp_flush_ready(disp);
 }
 
-void calculate_next_get_timeinfo()
-{
-  rtcTime = rtc.getDateTime();
-  next_get_timeinfo = ((millis() / 1000) + 1 + (60 - rtcTime.second)) * 1000;
-
-  Serial.printf("next_get_timeinfo: %d", next_get_timeinfo);
-}
-
 void setup()
 {
+  // use compile time for demo only
+  uint8_t hh = conv2d(__TIME__);
+  uint8_t mm = conv2d(__TIME__ + 3);
+  uint8_t ss = conv2d(__TIME__ + 6);
+  ms_offset = ((60 * 60 * hh) + (60 * mm) + ss) * 1000;
+
   Serial.begin(115200);
   // Serial.setDebugOutput(true);
   // while(!Serial);
@@ -119,15 +92,9 @@ void setup()
   gfx->fillScreen(BLACK);
 
 #ifdef GFX_BL
-  // pinMode(GFX_BL, OUTPUT);
-  // digitalWrite(GFX_BL, HIGH);
-  ledcSetup(0 /* LEDChannel */, 12000 /* freq */, 8 /* resolution */);
-  ledcAttachPin(GFX_BL, 0 /* LEDChannel */);
-  ledcWrite(0 /* LEDChannel */, 240); /* 0-255 */
+  pinMode(GFX_BL, OUTPUT);
+  digitalWrite(GFX_BL, HIGH);
 #endif
-
-  // Init RTC
-  rtc.begin();
 
   lv_init();
 
@@ -164,18 +131,7 @@ void setup()
     /* Init SquareLine prepared UI */
     ui_init();
 
-    /* assign images to array after ui_init() */
-    anchors[0] = ui_Image1;
-    anchors[1] = ui_Image2;
-    anchors[2] = ui_Image3;
-    anchors[3] = ui_Image4;
-    anchors[4] = ui_Image5;
-    anchors[5] = ui_Image6;
-    anchors[6] = ui_Image7;
-    anchors[7] = ui_Image8;
-
     Serial.println("Setup done");
-    anchor_next_frame_ms = millis() + (1000 / ANCHOR_FPS);
   }
 }
 
@@ -185,55 +141,13 @@ void loop()
 
   unsigned long ms = millis();
 
-  // handle ms overflow, over 49.71 days
-  if (ms < 200)
-  {
-    anchor_next_frame_ms = ms;
-    calculate_next_get_timeinfo();
-  }
-
-  // handle anchor escapement movement
-  if (ms >= anchor_next_frame_ms)
-  {
-    uint8_t next_anchor_idx = curr_anchor_idx + 1;
-    if (next_anchor_idx > 7)
-    {
-      next_anchor_idx = 0;
-    }
-
-    // show next image then hide current image
-    lv_obj_clear_flag(anchors[next_anchor_idx], LV_OBJ_FLAG_HIDDEN);
-    lv_obj_add_flag(anchors[curr_anchor_idx], LV_OBJ_FLAG_HIDDEN);
-
-    curr_anchor_idx = next_anchor_idx;
-    anchor_next_frame_ms += (1000 / ANCHOR_FPS);
-  }
-
-  // call getLocalTime() every minute
-  if (ms >= next_get_timeinfo)
-  {
-    rtcTime = rtc.getDateTime();
-
-    // detect time drifted
-    if (rtcTime.second > 1)
-    {
-      calculate_next_get_timeinfo();
-    }
-    else
-    {
-      next_get_timeinfo += 60000;
-      Serial.printf("next_get_timeinfo: %d", next_get_timeinfo);
-    }
-  }
-  // set watch arms' angle
-  int16_t angle = (millis() + 60000 - next_get_timeinfo) * 3600 / 60000;
+  unsigned long clock_ms = (ms_offset + ms) % TWELVE_HOUR_MS;
+  uint8_t hour = clock_ms / ONE_HOUR_MS;
+  uint8_t minute = (clock_ms % ONE_HOUR_MS) / ONE_MINUTE_MS;
+  int16_t angle = (clock_ms % ONE_MINUTE_MS) * 3600 / ONE_MINUTE_MS;
   lv_img_set_angle(ui_ImageArmSecond, angle);
-  angle = (angle + (rtcTime.minute * 3600)) / 60;
+  angle = (angle + (minute * 3600)) / 60;
   lv_img_set_angle(ui_ImageArmMinute, angle);
-  angle = (angle + (rtcTime.hour * 3600)) / 12;
+  angle = (angle + (hour * 3600)) / 12;
   lv_img_set_angle(ui_ImageArmHour, angle);
-
-  // set labels' text
-  sprintf(buf, "%s %d", weekday_str[rtc.getDayOfWeek(rtcTime.day, rtcTime.month, rtcTime.year)], rtcTime.day);
-  lv_label_set_text(ui_LabelDate, buf);
 }
