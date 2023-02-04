@@ -345,7 +345,7 @@ void loop()
     lv_img_set_angle(ui_ImageArmHour, angle);
 
     // set labels' text
-    sprintf(buf, "%2d", timeinfo.tm_mday);
+    sprintf(buf, "%d", timeinfo.tm_mday);
     lv_label_set_text(ui_LabelDate, buf);
     lv_label_set_text(ui_LabelWeekday, weekday_chi_str[timeinfo.tm_wday]);
     sprintf(buf, "%d %s %d, %s", 1900 + timeinfo.tm_year, month_str[timeinfo.tm_mon], timeinfo.tm_mday, weekday_str[timeinfo.tm_wday]);

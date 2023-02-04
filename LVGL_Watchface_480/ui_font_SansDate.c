@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Size: 28 px
  * Bpp: 8
- * Opts: --bpp 8 --size 28 --font /Users/leungchan/GoogleDrive/Arduino/LVGL_Watchface/SquareLine/assets/NotoSansCJKhk-Medium.otf -o /Users/leungchan/GoogleDrive/Arduino/LVGL_Watchface/SquareLine/assets/ui_font_SansDate.c --format lvgl --symbols 0123456789星期日一二三四五六 --no-prefilter
+ * Opts: --bpp 8 --size 28 --font /Users/Shared/LVGL_Watchface/SquareLine_480/assets/NotoSansCJKhk-Medium.otf -o /Users/Shared/LVGL_Watchface/SquareLine_480/assets/ui_font_SansDate.c --format lvgl --symbols 0123456789星期日一二三四五六 --no-prefilter
  ******************************************************************************/
 
 #include "ui.h"
