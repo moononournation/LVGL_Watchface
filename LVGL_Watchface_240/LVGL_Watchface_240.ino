@@ -70,6 +70,11 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
   lv_disp_flush_ready(disp);
 }
 
+void my_log_cb(const char *buf)
+{
+  Serial.println(buf);
+}
+
 void setup()
 {
   // use compile time for demo only
@@ -94,6 +99,10 @@ void setup()
 #ifdef GFX_BL
   pinMode(GFX_BL, OUTPUT);
   digitalWrite(GFX_BL, HIGH);
+#endif
+
+#if LV_USE_LOG
+  lv_log_register_print_cb(my_log_cb);
 #endif
 
   lv_init();
@@ -141,6 +150,7 @@ void loop()
 
   unsigned long ms = millis();
 
+  // set watch arms' angle
   unsigned long clock_ms = (ms_offset + ms) % TWELVE_HOUR_MS;
   uint8_t hour = clock_ms / ONE_HOUR_MS;
   uint8_t minute = (clock_ms % ONE_HOUR_MS) / ONE_MINUTE_MS;

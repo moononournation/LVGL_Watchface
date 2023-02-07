@@ -78,7 +78,7 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
   lv_disp_flush_ready(disp);
 }
 
-void my_log_cb(const char * buf)
+void my_log_cb(const char *buf)
 {
   Serial.println(buf);
 }
@@ -93,7 +93,7 @@ void setup()
 
   Serial.begin(115200);
   // Serial.setDebugOutput(true);
-  // while (!Serial);
+  // while(!Serial);
   Serial.println("LVGL Watchface");
 
 #ifdef GFX_EXTRA_PRE_INIT
@@ -101,13 +101,12 @@ void setup()
 #endif
 
   // Init Display
-  gfx->begin(100000000);
+  gfx->begin();
   gfx->fillScreen(BLACK);
 
 #ifdef GFX_BL
   pinMode(GFX_BL, OUTPUT);
-  // digitalWrite(GFX_BL, HIGH);
-  analogWrite(GFX_BL, 127);
+  digitalWrite(GFX_BL, HIGH);
 #endif
 
 #if LV_USE_LOG
@@ -163,6 +162,7 @@ void loop()
 
   unsigned long ms = millis();
 
+  // set watch arms' angle
   unsigned long clock_ms = (ms_offset + ms) % TWELVE_HOUR_MS;
   uint8_t hour = clock_ms / ONE_HOUR_MS;
   uint8_t minute = (clock_ms % ONE_HOUR_MS) / ONE_MINUTE_MS;

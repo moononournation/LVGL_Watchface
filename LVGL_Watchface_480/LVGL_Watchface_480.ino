@@ -45,6 +45,8 @@ const int daylightOffset_sec = 0;
  * Start of Arduino_GFX setting
  ******************************************************************************/
 #include <Arduino_GFX_Library.h>
+/* More data bus class: https://github.com/moononournation/Arduino_GFX/wiki/Data-Bus-Class */
+/* More display class: https://github.com/moononournation/Arduino_GFX/wiki/Display-Class */
 
 // ESP32S3-2.1-TP
 #define GFX_BL 38
@@ -135,7 +137,7 @@ static uint32_t screenHeight;
 static lv_disp_draw_buf_t draw_buf;
 static lv_color_t *disp_draw_buf;
 static lv_disp_drv_t disp_drv;
-static char buf[40]; // sprintf text buffer
+static char str_buf[40]; // sprintf string buffer
 
 static uint8_t curr_anchor_idx = 0;
 static int16_t curr_anchor_angle = 0;
@@ -160,6 +162,11 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
 #endif
 
   lv_disp_flush_ready(disp);
+}
+
+void my_log_cb(const char *buf)
+{
+  Serial.println(buf);
 }
 
 void calculate_next_get_timeinfo()
@@ -225,6 +232,10 @@ void setup()
   ledcSetup(0 /* LEDChannel */, 5000 /* freq */, 8 /* resolution */);
   ledcAttachPin(GFX_BL, 0 /* LEDChannel */);
   ledcWrite(0 /* LEDChannel */, 127); /* 0-255 */
+#endif
+
+#if LV_USE_LOG
+  lv_log_register_print_cb(my_log_cb);
 #endif
 
   lv_init();
@@ -345,10 +356,10 @@ void loop()
     lv_img_set_angle(ui_ImageArmHour, angle);
 
     // set labels' text
-    sprintf(buf, "%d", timeinfo.tm_mday);
-    lv_label_set_text(ui_LabelDate, buf);
+    sprintf(str_buf, "%d", timeinfo.tm_mday);
+    lv_label_set_text(ui_LabelDate, str_buf);
     lv_label_set_text(ui_LabelWeekday, weekday_chi_str[timeinfo.tm_wday]);
-    sprintf(buf, "%d %s %d, %s", 1900 + timeinfo.tm_year, month_str[timeinfo.tm_mon], timeinfo.tm_mday, weekday_str[timeinfo.tm_wday]);
-    lv_label_set_text(ui_LabelLongDate, buf);
+    sprintf(str_buf, "%d %s %d, %s", 1900 + timeinfo.tm_year, month_str[timeinfo.tm_mon], timeinfo.tm_mday, weekday_str[timeinfo.tm_wday]);
+    lv_label_set_text(ui_LabelLongDate, str_buf);
   }
 }

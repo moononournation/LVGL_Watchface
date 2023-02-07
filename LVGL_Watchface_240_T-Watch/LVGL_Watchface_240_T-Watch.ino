@@ -69,7 +69,7 @@ static uint32_t screenHeight;
 static lv_disp_draw_buf_t draw_buf;
 static lv_color_t *disp_draw_buf;
 static lv_disp_drv_t disp_drv;
-static char buf[8]; // sprintf text buffer
+static char str_buf[8]; // sprintf string buffer
 
 static uint8_t curr_anchor_idx = 0;
 static int16_t curr_anchor_angle = 0;
@@ -95,6 +95,11 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
   lv_disp_flush_ready(disp);
 }
 
+void my_log_cb(const char *buf)
+{
+  Serial.println(buf);
+}
+
 void calculate_next_get_timeinfo()
 {
   rtcTime = rtc.getDateTime();
@@ -115,7 +120,7 @@ void setup()
 #endif
 
   // Init Display
-  gfx->begin();
+  gfx->begin(80000000);
   gfx->fillScreen(BLACK);
 
 #ifdef GFX_BL
@@ -128,6 +133,10 @@ void setup()
 
   // Init RTC
   rtc.begin();
+
+#if LV_USE_LOG
+  lv_log_register_print_cb(my_log_cb);
+#endif
 
   lv_init();
 
@@ -224,7 +233,12 @@ void loop()
       next_get_timeinfo += 60000;
       Serial.printf("next_get_timeinfo: %d", next_get_timeinfo);
     }
+
+    // set labels' text
+    sprintf(str_buf, "%s %d", weekday_str[rtc.getDayOfWeek(rtcTime.day, rtcTime.month, rtcTime.year)], rtcTime.day);
+    lv_label_set_text(ui_LabelDate, str_buf);
   }
+
   // set watch arms' angle
   int16_t angle = (millis() + 60000 - next_get_timeinfo) * 3600 / 60000;
   lv_img_set_angle(ui_ImageArmSecond, angle);
@@ -232,8 +246,4 @@ void loop()
   lv_img_set_angle(ui_ImageArmMinute, angle);
   angle = (angle + (rtcTime.hour * 3600)) / 12;
   lv_img_set_angle(ui_ImageArmHour, angle);
-
-  // set labels' text
-  sprintf(buf, "%s %d", weekday_str[rtc.getDayOfWeek(rtcTime.day, rtcTime.month, rtcTime.year)], rtcTime.day);
-  lv_label_set_text(ui_LabelDate, buf);
 }

@@ -28,10 +28,18 @@
 #include <lvgl.h>
 #include "ui.h"
 
+/*******************************************************************************
+ * Start of Arduino_GFX setting
+ ******************************************************************************/
 #include <Arduino_GFX_Library.h>
 #define GFX_BL 25
+/* More data bus class: https://github.com/moononournation/Arduino_GFX/wiki/Data-Bus-Class */
 Arduino_DataBus *bus = new Arduino_RPiPicoSPI(8 /* DC */, 9 /* CS */, 10 /* SCK */, 11 /* MOSI */, 12 /* MISO */, spi1 /* spi */);
+/* More display class: https://github.com/moononournation/Arduino_GFX/wiki/Display-Class */
 Arduino_GFX *gfx = new Arduino_GC9A01(bus, 12, 0 /* rotation */, true /* IPS */);
+/*******************************************************************************
+ * End of Arduino_GFX setting
+ ******************************************************************************/
 
 // use compile time for demo only
 #define ONE_MINUTE_MS (60 * 1000)
@@ -44,7 +52,6 @@ static uint8_t conv2d(const char *p)
 }
 static unsigned long ms_offset;
 
-/* Change to your screen resolution */
 static uint32_t screenWidth;
 static uint32_t screenHeight;
 static lv_disp_draw_buf_t draw_buf;
@@ -72,6 +79,11 @@ void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color
   lv_disp_flush_ready(disp);
 }
 
+void my_log_cb(const char *buf)
+{
+  Serial.println(buf);
+}
+
 void setup()
 {
   // use compile time for demo only
@@ -97,6 +109,10 @@ void setup()
   pinMode(GFX_BL, OUTPUT);
   // digitalWrite(GFX_BL, HIGH);
   analogWrite(GFX_BL, 127);
+#endif
+
+#if LV_USE_LOG
+  lv_log_register_print_cb(my_log_cb);
 #endif
 
   lv_init();
@@ -171,6 +187,7 @@ void loop()
     anchor_next_frame_ms += (1000 / ANCHOR_FPS);
   }
 
+  // set watch arms' angle
   unsigned long clock_ms = (ms_offset + ms) % TWELVE_HOUR_MS;
   uint8_t hour = clock_ms / ONE_HOUR_MS;
   uint8_t minute = (clock_ms % ONE_HOUR_MS) / ONE_MINUTE_MS;
