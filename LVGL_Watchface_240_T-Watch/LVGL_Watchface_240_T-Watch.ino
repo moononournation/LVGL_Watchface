@@ -105,7 +105,7 @@ void calculate_next_get_timeinfo()
   rtcTime = rtc.getDateTime();
   next_get_timeinfo = ((millis() / 1000) + 1 + (60 - rtcTime.second)) * 1000;
 
-  Serial.printf("next_get_timeinfo: %d", next_get_timeinfo);
+  // Serial.printf("next_get_timeinfo: %d\n", next_get_timeinfo);
 }
 
 void setup()
@@ -231,7 +231,8 @@ void loop()
     else
     {
       next_get_timeinfo += 60000;
-      Serial.printf("next_get_timeinfo: %d", next_get_timeinfo);
+
+      // Serial.printf("next_get_timeinfo: %d\n", next_get_timeinfo);
     }
 
     // set labels' text
