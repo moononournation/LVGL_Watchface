@@ -21,9 +21,9 @@
 
 ## Anchor Escapement Video Source
 
-* [Ulysse Nardin In-House Made & Designed Silicon Anchor Escapement | aBlogtoWatch](https://www.youtube.com/watch?v=Nu5Xe51Q_oE)
+* [Ulysse Nardin In-House Made & Designed Silicon Anchor Escapement | aBlogtoWatch](https://youtu.be/Nu5Xe51Q_oE)
 * [How a Mechanical Watch Works | Explained in 5 Minutes
-](https://www.youtube.com/watch?v=d_pV8TGKfMc)
+](https://youtu.be/d_pV8TGKfMc)
 * [Ulysse Nardin Ulysse Anchor Tourbillon](https://youtu.be/jrP4_Kq6SjI)
 
 ## Video to Image File Conversion
