@@ -2,15 +2,9 @@
  * LVGL Watchface
  *
  * GIF animation source:
- * https://gifer.com/en/3QAe
  * https://gifer.com/en/fxTQ
- * https://gifer.com/en/fy5Z
- * https://gifer.com/en/IrF
- * https://gifer.com/en/WDrB
- * https://gifer.com/en/F4kC
  *
  * Image by macrovector on Freepik:
- * https://www.freepik.com/free-vector/different-types-watches-flat-icons-collection_4017194.htm
  * https://www.freepik.com/free-vector/watch-set-expensive-classic-clock-with-leather-metal-straps-illustration_13031503.htm
  *
  * Dependent libraries:
