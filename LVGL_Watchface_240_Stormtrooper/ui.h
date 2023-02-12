@@ -24,7 +24,7 @@ extern "C" {
 
 extern lv_obj_t *ui_Screen1;
 extern lv_obj_t *ui_ImageWatchface;
-extern lv_obj_t *ui_ImageGIF;
+extern lv_obj_t *ui_Image1;
 extern lv_obj_t *ui_ImageArmHour;
 extern lv_obj_t *ui_ImageArmMinute;
 extern lv_obj_t *ui_ImageArmSecond;

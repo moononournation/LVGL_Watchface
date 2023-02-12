@@ -9,7 +9,7 @@
 ///////////////////// VARIABLES ////////////////////
 lv_obj_t *ui_Screen1;
 lv_obj_t *ui_ImageWatchface;
-lv_obj_t *ui_ImageGIF;
+lv_obj_t *ui_Image1;
 lv_obj_t *ui_ImageArmHour;
 lv_obj_t *ui_ImageArmMinute;
 lv_obj_t *ui_ImageArmSecond;
@@ -40,14 +40,14 @@ lv_obj_set_align( ui_ImageWatchface, LV_ALIGN_CENTER );
 lv_obj_add_flag( ui_ImageWatchface, LV_OBJ_FLAG_ADV_HITTEST );   /// Flags
 lv_obj_clear_flag( ui_ImageWatchface, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
-ui_ImageGIF = lv_canvas_create(ui_Screen1);
-lv_obj_set_width( ui_ImageGIF, LV_SIZE_CONTENT);  /// 1
-lv_obj_set_height( ui_ImageGIF, LV_SIZE_CONTENT);   /// 1
-lv_obj_set_x( ui_ImageGIF, 0 );
-lv_obj_set_y( ui_ImageGIF, 50 );
-lv_obj_set_align( ui_ImageGIF, LV_ALIGN_CENTER );
-lv_obj_add_flag( ui_ImageGIF, LV_OBJ_FLAG_ADV_HITTEST );   /// Flags
-lv_obj_clear_flag( ui_ImageGIF, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
+ui_Image1 = lv_canvas_create(ui_Screen1);
+lv_obj_set_width( ui_Image1, LV_SIZE_CONTENT);  /// 1
+lv_obj_set_height( ui_Image1, LV_SIZE_CONTENT);   /// 1
+lv_obj_set_x( ui_Image1, 0 );
+lv_obj_set_y( ui_Image1, 50 );
+lv_obj_set_align( ui_Image1, LV_ALIGN_CENTER );
+lv_obj_add_flag( ui_Image1, LV_OBJ_FLAG_ADV_HITTEST );   /// Flags
+lv_obj_clear_flag( ui_Image1, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
 ui_ImageArmHour = lv_img_create(ui_Screen1);
 lv_img_set_src(ui_ImageArmHour, &ui_img_blaster_png);

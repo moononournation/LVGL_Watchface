@@ -243,10 +243,10 @@ void setup()
     /* Init SquareLine prepared UI */
     ui_init();
 
-    // In ui.c, replace "ui_ImageGIF = lv_gif_create(ui_Screen1);" to "ui_ImageGIF = lv_canvas_create(ui_Screen1);"
-    lv_canvas_set_buffer(ui_ImageGIF, cbuf, gif->width, gif->height, LV_IMG_CF_TRUE_COLOR);
-    lv_obj_set_width(ui_ImageGIF, gif->width);
-    lv_obj_set_height(ui_ImageGIF, gif->height);
+    // In ui.c, replace "ui_Image1 = lv_img_create(ui_Screen1);" to "ui_Image1 = lv_canvas_create(ui_Screen1);"
+    lv_canvas_set_buffer(ui_Image1, cbuf, gif->width, gif->height, LV_IMG_CF_TRUE_COLOR);
+    lv_obj_set_width(ui_Image1, gif->width);
+    lv_obj_set_height(ui_Image1, gif->height);
 
     Serial.println("Setup done");
     next_frame_ms = millis();
@@ -285,7 +285,7 @@ void loop()
         d = gif->palette->colors[*src++];
         MSB_16_SET(*dst++, d);
       }
-      lv_obj_invalidate(ui_ImageGIF);
+      lv_obj_invalidate(ui_Image1);
     }
     else
     {
