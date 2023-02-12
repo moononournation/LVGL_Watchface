@@ -148,9 +148,9 @@ void setup()
     /* Init SquareLine prepared UI */
     ui_init();
 
-    // In ui.c, replace "ui_ImageGIF = lv_gif_create(ui_Screen1);" to "ui_ImageGIF = lv_gif_create(ui_Screen1);"
+    // In ui.c, replace "ui_Image1 = lv_img_create(ui_Screen1);" to "ui_Image1 = lv_gif_create(ui_Screen1);"
     LV_IMG_DECLARE(star_wars_stormtrooper_48_gif);
-    lv_gif_set_src(ui_ImageGIF, &star_wars_stormtrooper_48_gif);
+    lv_gif_set_src(ui_Image1, &star_wars_stormtrooper_48_gif);
 
     Serial.println("Setup done");
   }
