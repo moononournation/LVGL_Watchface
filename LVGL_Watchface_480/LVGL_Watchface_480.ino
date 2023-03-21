@@ -148,6 +148,8 @@ static unsigned long anchor_next_frame_ms;
 static bool ntpGotTime = false;
 static struct tm timeinfo;
 static unsigned long next_get_timeinfo;
+static unsigned long last_second_angle = 999;
+static int last_display_mday = -1;
 
 /* Display flushing */
 void my_disp_flush(lv_disp_drv_t *disp, const lv_area_t *area, lv_color_t *color_p)
@@ -349,17 +351,27 @@ void loop()
 
     // set watch arms' angle
     int16_t angle = (millis() + 60000 - next_get_timeinfo) * 3600 / 60000;
-    lv_img_set_angle(ui_ImageArmSecond, angle);
-    angle = (angle + (timeinfo.tm_min * 3600)) / 60;
-    lv_img_set_angle(ui_ImageArmMinute, angle);
-    angle = (angle + (timeinfo.tm_hour * 3600)) / 12;
-    lv_img_set_angle(ui_ImageArmHour, angle);
+    if (last_second_angle != angle)
+    {
+      lv_img_set_angle(ui_ImageArmSecond, angle);
+      angle = (angle + (timeinfo.tm_min * 3600)) / 60;
+      lv_img_set_angle(ui_ImageArmMinute, angle);
+      angle = (angle + (timeinfo.tm_hour * 3600)) / 12;
+      lv_img_set_angle(ui_ImageArmHour, angle);
+
+      last_second_angle = angle;
+    }
 
     // set labels' text
-    sprintf(str_buf, "%d", timeinfo.tm_mday);
-    lv_label_set_text(ui_LabelDate, str_buf);
-    lv_label_set_text(ui_LabelWeekday, weekday_chi_str[timeinfo.tm_wday]);
-    sprintf(str_buf, "%d %s %d, %s", 1900 + timeinfo.tm_year, month_str[timeinfo.tm_mon], timeinfo.tm_mday, weekday_str[timeinfo.tm_wday]);
-    lv_label_set_text(ui_LabelLongDate, str_buf);
+    if (last_display_mday != timeinfo.tm_mday)
+    {
+      sprintf(str_buf, "%d", timeinfo.tm_mday);
+      lv_label_set_text(ui_LabelDate, str_buf);
+      lv_label_set_text(ui_LabelWeekday, weekday_chi_str[timeinfo.tm_wday]);
+      sprintf(str_buf, "%d %s %d, %s", 1900 + timeinfo.tm_year, month_str[timeinfo.tm_mon], timeinfo.tm_mday, weekday_str[timeinfo.tm_wday]);
+      lv_label_set_text(ui_LabelLongDate, str_buf);
+
+      last_display_mday = timeinfo.tm_mday;
+    }
   }
 }
