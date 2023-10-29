@@ -34,7 +34,7 @@ ui_Screen1 = lv_obj_create(NULL);
 lv_obj_clear_flag( ui_Screen1, LV_OBJ_FLAG_SCROLLABLE );    /// Flags
 
 ui_ImageWatchface = lv_img_create(ui_Screen1);
-lv_img_set_src(ui_ImageWatchface, &ui_img_947298960);
+lv_img_set_src(ui_ImageWatchface, &ui_img_watchface240seeedstudio_png);
 lv_obj_set_width( ui_ImageWatchface, LV_SIZE_CONTENT);  /// 1
 lv_obj_set_height( ui_ImageWatchface, LV_SIZE_CONTENT);   /// 1
 lv_obj_set_align( ui_ImageWatchface, LV_ALIGN_CENTER );

@@ -31,7 +31,7 @@ extern lv_obj_t *ui_ImageArmSecond;
 extern lv_obj_t *ui____initial_actions0;
 
 
-LV_IMG_DECLARE( ui_img_947298960);   // assets/watchface240-seeedstudio.png
+LV_IMG_DECLARE( ui_img_watchface240seeedstudio_png);   // assets/watchface240Seeedstudio.png
 LV_IMG_DECLARE( ui_img_armhour_png);   // assets/armHour.png
 LV_IMG_DECLARE( ui_img_armminute_png);   // assets/armMinute.png
 LV_IMG_DECLARE( ui_img_armsecond_png);   // assets/armSecond.png
